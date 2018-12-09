@@ -46,39 +46,48 @@ class Shot:
         if self.keyHandler[UP] == True:
             image(self.img, self.x +23, self.y, 5, 20)
             self.y += self.vy
-            
+ 
+class Game:
+    def __init__(self,w,h):
+        self.w=w
+        self.h=h
+        self.backimage=loadImage(path+"/Images/"+'space.jpg')
+        self.ship=Spaceship(390, 500)
+    def display(self):
+        image(self.backimage,0,0,self.w,self.h)
+        self.ship.display()
+                
         
         
-   
-        
-ship = Spaceship(390, 500)
 
+g=Game(800,600)
 def setup():
-    size(800, 600)
+    size(g.w, g.h)
     
 def draw():
     background(255, 255, 255)
-    ship.display()
-    for x in range(len(ship.shots)):
-        ship.shots[x].display()
+    g.display()
+
+    for x in range(len(g.ship.shots)):
+        g.ship.shots[x].display()
     
 def keyPressed():
     global shotcount
     if keyCode == LEFT:
-        ship.keyHandler[LEFT] = True
+        g.ship.keyHandler[LEFT] = True
     elif keyCode == RIGHT:
-        ship.keyHandler[RIGHT] = True
+        g.ship.keyHandler[RIGHT] = True
     elif keyCode == UP:
-        ship.shots[shotcount].x = ship.x
-        ship.shots[shotcount].keyHandler[UP] = True
+        g.ship.shots[shotcount].x = g.ship.x
+        g.ship.shots[shotcount].keyHandler[UP] = True
         shotcount += 1
     
         
 def keyReleased():
     if keyCode == LEFT:
-        ship.keyHandler[LEFT] = False
+        g.ship.keyHandler[LEFT] = False
     elif keyCode == RIGHT:
-        ship.keyHandler[RIGHT] = False
+        g.ship.keyHandler[RIGHT] = False
 
 
     
