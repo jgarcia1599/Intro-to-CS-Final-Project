@@ -85,13 +85,15 @@ class Game:
         self.w=w
         self.h=h
         self.state="menu"
-        self.asteroids = []                                                             #line 88 to 94 adds Asteroids to the asteroids array
-        for x in range(100):                                                            #number of asteroids                                                        
-            randomx = random.randint(0,self.w)                                          #lines 90 to 93 randomly assign their x value and the y value, randomely assigning the y value impacts when it will appear, maybe theres a better way to do this? like putting all their y values equal to zero and making them appear as a funcion of time 
-            if randomx == self.w:
-                randomx += -50
-            randomy = random.randint(-10000, 0)
-            self.asteroids.append(Asteroid(randomx, randomy, 0, 5))
+        self.asteroids = [] 
+        self.timer=time.time()
+        #print(startTime)                                                            #line 88 to 94 adds Asteroids to the asteroids array
+        for x in range(100):      
+            self.randomx = random.randint(0,self.w) 
+            if self.randomx == self.w:
+                self.randomx += -50
+            self.randomy= random.randint(-10000, 0)                                                                                                                                           
+            self.asteroids.append(Asteroid(self.randomx, self.randomy, 0, 5))
         self.backimage = []
         for x in range(2):
             self.backimage.append(Background(0,-x*self.h,self.w,self.h))
@@ -110,9 +112,12 @@ class Game:
                 s.display()
             for z in self.asteroids:                                       #displays asteroids
                 z.display()
+                
+                
             textSize(20)
             fill(255)
-            text("Score: "+str(int(time.time()-self.startTime)), 20, 20)
+            gametime=int(time.time()-g.startTime)
+            text("Score: "+str(gametime), 20, 20)
                     
         
         
@@ -151,9 +156,14 @@ def draw():
 
 def mouseClicked():
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
-        g.state="play"    
+        g.state="play"  
         g.startTime = time.time()
-        
+        adder=10
+        #ATTEMPT #1 at adding more asteroids
+        # if int(time.time()-g.startTime)==adder:
+        #     for x in range(adder):
+        #         g.asteroids.append(Asteroid(g.randomx,g.randomy,0,5))
+        #         adder+=10
 def keyPressed():
     global shotcount
     if keyCode == LEFT:
@@ -162,6 +172,8 @@ def keyPressed():
         g.ship.keyHandler[RIGHT] = True
     elif keyCode == UP:
         g.ship.shots.append(Shot(g.ship.x,g.ship.y))
+        #Attempt #2 at adding more asteroids
+        #g.asteroids.append(Asteroid(g.randomx,g.randomy,0,5))
         
 def keyReleased():
     if keyCode == LEFT:
