@@ -2,8 +2,6 @@ import time
 
 path = os.getcwd()
 
-shotcount = 0
-
 class Spaceship:
     def __init__(self, x, y):
         self.x = x
@@ -13,11 +11,8 @@ class Spaceship:
         self.keyHandler={LEFT:False, RIGHT:False}
         self.img = loadImage(path+"/Images/"+'spaceship.png')
         self.shots = []
-        # for x in range(1000):
-            # self.shots.append(Shot(3000,self.y-20))
         
     def display(self):
-        global shotcount
         image(self.img, self.x, self.y, 50, 50)
         
         if self.keyHandler[LEFT]:
@@ -31,10 +26,19 @@ class Spaceship:
             else:
                 self.vx = 0
         else:
-            self.vx = 0
-            
+            self.vx = 0        
         self.x += self.vx
+# class Enemies:
+#     def __init__ (self):
+#         self.x=x
+#         self.y=y
+#         self.vx=0
+#         self.vy=0
         
+        
+    
+#     def display(self):
+            
         
 class Shot:
     def __init__(self, x, y):
@@ -65,9 +69,8 @@ class Background:
     
     def display(self):
         image(self.img, 0, self.y+self.vy, self.w, self.h)
-        print self.y, self.y+self.vy, g.h
         self.vy = (self.vy+1)%g.h
-        print self.y
+
 
 class Game:
     def __init__(self,w,h):
@@ -76,7 +79,6 @@ class Game:
         self.state="menu"
         self.backimage = []
         for x in range(2):
-            print -x*self.h
             self.backimage.append(Background(0,-x*self.h,self.w,self.h))
         self.ship=Spaceship(self.w/2, self.h - 75)
         self.menuimg=loadImage(path+"/Images/"+'menu.jpg')
@@ -89,17 +91,11 @@ class Game:
             for x in range(len(self.backimage)):
                 self.backimage[x].display()
             self.ship.display()
-        
             for s in self.ship.shots:
                 s.display()
-            # for x in range(len(g.ship.shots)):
-            #     try:
-            #         g.ship.shots[x].display()
-            #     except:
-            #         print "Error"
             textSize(20)
             fill(255)
-            text(str(int(time.time()-self.startTime)), 20, 20)
+            text("Score: "+str(int(time.time()-self.startTime)), 20, 20)
                     
         
         
@@ -108,13 +104,10 @@ g=Game(800,600)
 def setup():
     size(g.w, g.h)
     
-def draw():
-      
+def draw():      
     if g.state == "menu":
         g.display()
         textSize(34)
-        
-        
         image(g.logo,0,0,g.w,g.h//3)
         
         if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
@@ -136,10 +129,7 @@ def draw():
         textSize(50)
         fill (255,0,0)
         text("GAME OVER", g.w//2.5, g.h//3+140)
-        # g.__init__(1280,720,585)
         g.display()
-
-
 
 def mouseClicked():
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
@@ -153,12 +143,7 @@ def keyPressed():
     elif keyCode == RIGHT:
         g.ship.keyHandler[RIGHT] = True
     elif keyCode == UP:
-        # g.ship.shots[shotcount].x = g.ship.x
-        # g.ship.shots[shotcount].keyHandler[UP] = True
-        # shotcount += 1
-        print g.ship.y
         g.ship.shots.append(Shot(g.ship.x,g.ship.y))
-    
         
 def keyReleased():
     if keyCode == LEFT:
