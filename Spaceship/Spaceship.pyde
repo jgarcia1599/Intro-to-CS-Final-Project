@@ -24,7 +24,7 @@ class Spaceship:
             else:
                 self.vx = 0
         elif self.keyHandler[RIGHT]:
-            if self.x != 750:
+            if self.x != g.w -50:
                 self.vx = 5
             else:
                 self.vx = 0
@@ -47,20 +47,42 @@ class Shot:
             image(self.img, self.x +23, self.y, 5, 20)
             self.y += self.vy
  
+class Background:
+    def __init__(self,x,y,w,h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.vy = +1
+        self.img = loadImage(path+"/Images/"+'space.jpg')
+    
+    def display(self):
+        image(self.img, 0, self.y, self.w, self.h)
+        self.y += self.vy
+
+
 class Game:
     def __init__(self,w,h):
         self.w=w
         self.h=h
         self.state="menu"
-        self.backimage=loadImage(path+"/Images/"+'space.jpg')
+        self.backimage = []
+        for x in range(10):
+            self.backimage.append(Background(0,x*(-self.h),self.w,self.h))
+        self.ship=Spaceship(self.w/2, self.h - 75)
         self.menuimg=loadImage(path+"/Images/"+'menu.jpg')
-        self.ship=Spaceship(390, 500)
+    
     def display(self):
         if self.state=="menu":
            image(self.menuimg,0,0,self.w,self.h)
         else:
-            image(self.backimage,0,0,self.w,self.h)
+            for x in range(len(self.backimage)):
+                self.backimage[x].display()
             self.ship.display()
+        
+            for x in range(len(g.ship.shots)):
+                g.ship.shots[x].display()
+
                     
         
         
@@ -100,8 +122,7 @@ def draw():
         # g.__init__(1280,720,585)
         g.display()
 
-    for x in range(len(g.ship.shots)):
-        g.ship.shots[x].display()
+
 
 def mouseClicked():
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
