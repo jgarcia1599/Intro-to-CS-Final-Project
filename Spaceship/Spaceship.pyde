@@ -1,3 +1,5 @@
+import time
+
 path = os.getcwd()
 
 shotcount = 0
@@ -11,8 +13,8 @@ class Spaceship:
         self.keyHandler={LEFT:False, RIGHT:False}
         self.img = loadImage(path+"/Images/"+'spaceship.png')
         self.shots = []
-        for x in range(1000):
-            self.shots.append(Shot(3000,self.y-20))
+        # for x in range(1000):
+            # self.shots.append(Shot(3000,self.y-20))
         
     def display(self):
         global shotcount
@@ -43,9 +45,14 @@ class Shot:
         self.keyHandler = {UP:False}
         
     def display(self):
-        if self.keyHandler[UP] == True:
-            image(self.img, self.x +23, self.y, 5, 20)
-            self.y += self.vy
+        if self.y < -200:
+            g.ship.shots.remove(self)
+            del self
+            return
+            
+        # if self.keyHandler[UP] == True:
+        image(self.img, self.x +23, self.y, 5, 20)
+        self.y += self.vy
  
 class Background:
     def __init__(self,x,y,w,h):
@@ -57,9 +64,10 @@ class Background:
         self.img = loadImage(path+"/Images/"+'space.jpg')
     
     def display(self):
-        image(self.img, 0, self.y, self.w, self.h)
-        self.y += self.vy
-
+        image(self.img, 0, self.y+self.vy, self.w, self.h)
+        print self.y, self.y+self.vy, g.h
+        self.vy = (self.vy+1)%g.h
+        print self.y
 
 class Game:
     def __init__(self,w,h):
@@ -67,10 +75,12 @@ class Game:
         self.h=h
         self.state="menu"
         self.backimage = []
-        for x in range(10):
-            self.backimage.append(Background(0,x*(-self.h),self.w,self.h))
+        for x in range(2):
+            print -x*self.h
+            self.backimage.append(Background(0,-x*self.h,self.w,self.h))
         self.ship=Spaceship(self.w/2, self.h - 75)
         self.menuimg=loadImage(path+"/Images/"+'menu.jpg')
+        self.logo=loadImage(path+"/Images/"+'spaceinvaders.png')
     
     def display(self):
         if self.state=="menu":
@@ -80,9 +90,16 @@ class Game:
                 self.backimage[x].display()
             self.ship.display()
         
-            for x in range(len(g.ship.shots)):
-                g.ship.shots[x].display()
-
+            for s in self.ship.shots:
+                s.display()
+            # for x in range(len(g.ship.shots)):
+            #     try:
+            #         g.ship.shots[x].display()
+            #     except:
+            #         print "Error"
+            textSize(20)
+            fill(255)
+            text(str(int(time.time()-self.startTime)), 20, 20)
                     
         
         
@@ -97,8 +114,8 @@ def draw():
         g.display()
         textSize(34)
         
-        logo=loadImage(path+"/Images/"+'spaceinvaders.png')
-        image(logo,0,0,g.w,g.h//3)
+        
+        image(g.logo,0,0,g.w,g.h//3)
         
         if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
             fill(255,0,0)
@@ -127,7 +144,8 @@ def draw():
 def mouseClicked():
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
         g.state="play"    
-
+        g.startTime = time.time()
+        
 def keyPressed():
     global shotcount
     if keyCode == LEFT:
@@ -135,9 +153,11 @@ def keyPressed():
     elif keyCode == RIGHT:
         g.ship.keyHandler[RIGHT] = True
     elif keyCode == UP:
-        g.ship.shots[shotcount].x = g.ship.x
-        g.ship.shots[shotcount].keyHandler[UP] = True
-        shotcount += 1
+        # g.ship.shots[shotcount].x = g.ship.x
+        # g.ship.shots[shotcount].keyHandler[UP] = True
+        # shotcount += 1
+        print g.ship.y
+        g.ship.shots.append(Shot(g.ship.x,g.ship.y))
     
         
 def keyReleased():
