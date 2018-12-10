@@ -1,4 +1,5 @@
 import time
+import random
 
 path = os.getcwd()
 
@@ -28,16 +29,23 @@ class Spaceship:
         else:
             self.vx = 0        
         self.x += self.vx
-# class Enemies:
-#     def __init__ (self):
-#         self.x=x
-#         self.y=y
-#         self.vx=0
-#         self.vy=0
-        
-        
+
+class Enemies:
+    def __init__ (self,x,y,vx,vy):
+        self.x=x
+        self.y=y                                                 #general enemy class
+        self.vx=vx
+        self.vy=vy
     
-#     def display(self):
+        
+class Asteroid(Enemies):
+    def __init__(self,x,y,vx, vy):
+        Enemies.__init__(self,x,y,vx,vy)
+        self.img = loadImage(path+"/Images/"+'meteor.png')                #asteroids class
+        
+    def display(self):
+        image(self.img, self.x, self.y, 50, 50)
+        self.y += self.vy
             
         
 class Shot:
@@ -77,6 +85,13 @@ class Game:
         self.w=w
         self.h=h
         self.state="menu"
+        self.asteroids = []                                                             #line 88 to 94 adds Asteroids to the asteroids array
+        for x in range(100):                                                            #number of asteroids                                                        
+            randomx = random.randint(0,self.w)                                          #lines 90 to 93 randomly assign their x value and the y value, randomely assigning the y value impacts when it will appear, maybe theres a better way to do this? like putting all their y values equal to zero and making them appear as a funcion of time 
+            if randomx == self.w:
+                randomx += -50
+            randomy = random.randint(-10000, 0)
+            self.asteroids.append(Asteroid(randomx, randomy, 0, 5))
         self.backimage = []
         for x in range(2):
             self.backimage.append(Background(0,-x*self.h,self.w,self.h))
@@ -93,6 +108,8 @@ class Game:
             self.ship.display()
             for s in self.ship.shots:
                 s.display()
+            for z in self.asteroids:                                       #displays asteroids
+                z.display()
             textSize(20)
             fill(255)
             text("Score: "+str(int(time.time()-self.startTime)), 20, 20)
@@ -130,6 +147,7 @@ def draw():
         fill (255,0,0)
         text("GAME OVER", g.w//2.5, g.h//3+140)
         g.display()
+    
 
 def mouseClicked():
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
