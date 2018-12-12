@@ -3,6 +3,9 @@ import random
 
 path = os.getcwd()
 
+number = 21
+numberchange = 1
+
 class Spaceship:
     def __init__(self, x, y):
         self.x = x
@@ -37,6 +40,11 @@ class Enemies:
         self.vx=vx
         self.vy=vy
     
+#class Alien(Enemies):
+    #def __init__(self,x,y,vx, vy):
+        #Enemies.__init__(self,x,y,vx,vy)
+    #self        
+        
         
 class Asteroid(Enemies):
     def __init__(self,x,y,vx, vy):
@@ -44,6 +52,12 @@ class Asteroid(Enemies):
         self.img = loadImage(path+"/Images/"+'meteor.png')                #asteroids class
         
     def display(self):
+        
+        if self.y > g.h+50 :
+            g.asteroids.remove(self)
+            del self
+            return
+        
         image(self.img, self.x, self.y, 50, 50)
         self.y += self.vy
             
@@ -57,7 +71,7 @@ class Shot:
         self.keyHandler = {UP:False}
         
     def display(self):
-        if self.y < -200:
+        if self.y < -50:
             g.ship.shots.remove(self)
             del self
             return
@@ -86,14 +100,10 @@ class Game:
         self.h=h
         self.state="menu"
         self.asteroids = [] 
-        self.timer=time.time()
+        self.startTime = 0
         #print(startTime)                                                            #line 88 to 94 adds Asteroids to the asteroids array
-        for x in range(100):      
-            self.randomx = random.randint(0,self.w) 
-            if self.randomx == self.w:
-                self.randomx += -50
-            self.randomy= random.randint(-10000, 0)                                                                                                                                           
-            self.asteroids.append(Asteroid(self.randomx, self.randomy, 0, 5))
+        
+    
         self.backimage = []
         for x in range(2):
             self.backimage.append(Background(0,-x*self.h,self.w,self.h))
@@ -118,6 +128,19 @@ class Game:
             fill(255)
             gametime=int(time.time()-g.startTime)
             text("Score: "+str(gametime), 20, 20)
+            
+        
+      
+    def makeasteroids(self):
+        if (number%40) == 0:
+            for x in range(1):
+                randomy = random.randint(-50,0) 
+                randomx = random.randint(0,self.w) 
+                if randomx == self.w:
+                    randomx += -50                                                                                                                                        
+                self.asteroids.append(Asteroid(randomx, randomy, 0, 5))
+    
+                
                     
         
         
@@ -153,17 +176,16 @@ def draw():
         text("GAME OVER", g.w//2.5, g.h//3+140)
         g.display()
     
+    global number    
+    number += numberchange
+    g.makeasteroids()
+    
 
 def mouseClicked():
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
         g.state="play"  
         g.startTime = time.time()
-        adder=10
-        #ATTEMPT #1 at adding more asteroids
-        # if int(time.time()-g.startTime)==adder:
-        #     for x in range(adder):
-        #         g.asteroids.append(Asteroid(g.randomx,g.randomy,0,5))
-        #         adder+=10
+    
 def keyPressed():
     global shotcount
     if keyCode == LEFT:
@@ -172,8 +194,7 @@ def keyPressed():
         g.ship.keyHandler[RIGHT] = True
     elif keyCode == UP:
         g.ship.shots.append(Shot(g.ship.x,g.ship.y))
-        #Attempt #2 at adding more asteroids
-        #g.asteroids.append(Asteroid(g.randomx,g.randomy,0,5))
+    
         
 def keyReleased():
     if keyCode == LEFT:
