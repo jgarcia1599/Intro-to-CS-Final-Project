@@ -90,8 +90,18 @@ class Alien(Enemies):
         self.xdirection = True
         self.ydirection = True
         self.shots = []
+    def distance (self,e):
+        return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
+ 
+    def shipshots(self):
+        for x in g.ship.shots:
+            if self.distance(x)<=30:
+                g.enemy1.remove(self)
+                del self 
+                return
     
     def display(self):
+        self.shipshots()
         image(self.img, self.x, self.y, 100, 100, 64*self.imgstatus, 0, 64+64*self.imgstatus, 64)
         
         if self.imgstatus == 4:
@@ -124,7 +134,10 @@ class Alien(Enemies):
     def shotmaker(self):
         if (number%20) == 0:
             for x in range(1):                                                                                                                                        
-                self.shots.append(Shotforenemy1(self.x+50, self.y+50, 0, 5))
+                self.shots.append(Shotforenemy1(self.x+50, self.y+50, 0, 5))        
+
+        
+        
 
 class creature(Enemies):
     def __init__(self,x,y,vx, vy):
@@ -134,8 +147,18 @@ class creature(Enemies):
         self.xdirection = True
         self.ydirection = True
         self.shots = []
+    def distance (self,e):
+        return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
+ 
+    def shipshots(self):
+        for x in g.ship.shots:
+            if self.distance(x)<=30:
+                g.enemy2.remove(self)
+                del self 
+                return
     
     def display(self):
+        self.shipshots()
         image(self.img, self.x, self.y, 75, 120, self.imgstatus*64, 0, 64+64*self.imgstatus, 159)
         if self.imgstatus == 7:
             self.imgstatus += -7 
@@ -178,8 +201,20 @@ class enemy3(Enemies):
         self.imgstatus = 0
         self.direction = 1
         self.shots = []
+        
+    def distance (self,e):
+        return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
+ 
+    def shipshots(self):
+        for x in g.ship.shots:
+            if self.distance(x)<=30:
+                g.enemy3.remove(self)
+                del self 
+                return
+
     
     def display(self):
+        self.shipshots()
         image(self.img, self.x, self.y, 100, 100, 64*self.imgstatus, 0, 64+64*self.imgstatus, 64)
         
         if self.imgstatus == 7:
@@ -230,8 +265,24 @@ class Asteroid(Enemies):
     def __init__(self,x,y,vx, vy):
         Enemies.__init__(self,x,y,vx,vy)
         self.img = loadImage(path+"/Images/"+'meteor.png')                #asteroids class
-        
+    def distance (self,e):
+        return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
+ 
+    def shipshots(self):
+        for x in g.ship.shots:
+            if self.distance(x)<=30:
+                g.asteroids.remove(self)
+                del self 
+                return
+
+        # for a in g.enemy1:
+        #     for x in g.enemy1[g.enemy1.index(a)].shots:
+        #         if self.distance(x)<=50:
+        #             g.enemy1[g.enemy1.index(a)].shots.remove(x)
+        #             g.lives-=1
+                        
     def display(self):
+        self.shipshots()
         
         if self.y > g.h+50 :
             g.asteroids.remove(self)
