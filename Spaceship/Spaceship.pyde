@@ -6,6 +6,7 @@ path = os.getcwd()
 number = 21
 numberchange = 1
 
+
 class Spaceship:
     def __init__(self, x, y):
         self.x = x
@@ -15,8 +16,46 @@ class Spaceship:
         self.keyHandler={LEFT:False, RIGHT:False}
         self.img = loadImage(path+"/Images/"+'spaceship.png')
         self.shots = []
+
+    def distance (self,e):
+        return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
+    
+    def spaceshiplives(self):
+        for a in g.asteroids:
+            if self.distance(a)<=50:
+                g.asteroids.remove(a)
+                g.lives-=1
+        for a in g.enemy1:
+            if self.distance(a)<=50:
+                g.enemy1.remove(a)
+                g.lives-=1
+        for a in g.enemy1:
+            for x in g.enemy1[g.enemy1.index(a)].shots:
+                if self.distance(x)<=50:
+                    g.enemy1[g.enemy1.index(a)].shots.remove(x)
+                    g.lives-=1
+        for a in g.enemy2:
+            if self.distance(a)<=50:
+                g.enemy2.remove(a)
+                g.lives-=1
+        for a in g.enemy2:
+            for x in g.enemy2[g.enemy2.index(a)].shots:
+                if self.distance(x)<=50:
+                    g.enemy2[g.enemy2.index(a)].shots.remove(x)
+                    g.lives-=1
+        for a in g.enemy3:
+            if self.distance(a)<=50:
+                g.enemy3.remove(a)
+                g.lives-=1
+        for a in g.enemy3:
+            for x in g.enemy3[g.enemy3.index(a)].shots:
+                if self.distance(x)<=5:
+                    g.enemy3[g.enemy3.index(a)].shots.remove(x)
+                    g.lives-=1
         
+    
     def display(self):
+        self.spaceshiplives()
         image(self.img, self.x, self.y, 50, 50)
         
         if self.keyHandler[LEFT]:
@@ -32,6 +71,9 @@ class Spaceship:
         else:
             self.vx = 0        
         self.x += self.vx
+    
+
+        
 
 class Enemies:
     def __init__ (self,x,y,vx,vy):
