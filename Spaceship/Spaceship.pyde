@@ -55,22 +55,23 @@ class Spaceship:
         
     
     def display(self):
-        self.spaceshiplives()
-        image(self.img, self.x, self.y, 50, 50)
-        
-        if self.keyHandler[LEFT]:
-            if self.x != 0:
-                self.vx = -10
+        if g.state=="play":
+            self.spaceshiplives()
+            image(self.img, self.x, self.y, 50, 50)
+            
+            if self.keyHandler[LEFT]:
+                if self.x != 0:
+                    self.vx = -10
+                else:
+                    self.vx = 0
+            elif self.keyHandler[RIGHT]:
+                if self.x != g.w -50:
+                    self.vx = 10
+                else:
+                    self.vx = 0
             else:
-                self.vx = 0
-        elif self.keyHandler[RIGHT]:
-            if self.x != g.w -50:
-                self.vx = 10
-            else:
-                self.vx = 0
-        else:
-            self.vx = 0        
-        self.x += self.vx
+                self.vx = 0        
+            self.x += self.vx
     
 
         
@@ -95,41 +96,41 @@ class Alien(Enemies):
  
     def shipshots(self):
         for x in g.ship.shots:
-            if self.distance(x)<=30:
+            if self.distance(x)<=30:                
                 g.enemy1.remove(self)
                 del self 
                 return
     
     def display(self):
-        self.shipshots()
-        image(self.img, self.x, self.y, 100, 100, 64*self.imgstatus, 0, 64+64*self.imgstatus, 64)
-        
-        if self.imgstatus == 4:
-            self.imgstatus += -4 
-        else:
-            self.imgstatus += 1
+        if g.state=="play":
+            self.shipshots()
+            image(self.img, self.x, self.y, 100, 100, 64*self.imgstatus, 0, 64+64*self.imgstatus, 64)
+            if self.imgstatus == 4:
+                self.imgstatus += -4 
+            else:
+                self.imgstatus += 1
+                
+            if self.x == 0:
+                self.xdirection = True
+            if self.x == g.w - 100:
+                self.xdirection = False
+            if self.y == 0:
+                self.ydirection = True
+            if self.y == g.h - 100:
+                self.ydirection = False
             
-        if self.x == 0:
-            self.xdirection = True
-        if self.x == g.w - 100:
-            self.xdirection = False
-        if self.y == 0:
-            self.ydirection = True
-        if self.y == g.h - 100:
-            self.ydirection = False
-        
-        
-        if self.xdirection:
-            self.x += self.vx
-        else:
-            self.x -= self.vx
-        if self.ydirection:
-            self.y += self.vy
-        else:
-            self.y -= self.vy
             
-        for x in self.shots:
-            x.display()
+            if self.xdirection:
+                self.x += self.vx
+            else:
+                self.x -= self.vx
+            if self.ydirection:
+                self.y += self.vy
+            else:
+                self.y -= self.vy
+                
+            for x in self.shots:
+                x.display()
             
     def shotmaker(self):
         if (number%20) == 0:
@@ -153,39 +154,41 @@ class creature(Enemies):
     def shipshots(self):
         for x in g.ship.shots:
             if self.distance(x)<=30:
+                self.rs=True
                 g.enemy2.remove(self)
                 del self 
                 return
     
     def display(self):
-        self.shipshots()
-        image(self.img, self.x, self.y, 75, 120, self.imgstatus*64, 0, 64+64*self.imgstatus, 159)
-        if self.imgstatus == 7:
-            self.imgstatus += -7 
-        else:
-            self.imgstatus += 1
+        if g.state=="play":
+            self.shipshots()
+            image(self.img, self.x, self.y, 75, 120, self.imgstatus*64, 0, 64+64*self.imgstatus, 159)
+            if self.imgstatus == 7:
+                self.imgstatus += -7 
+            else:
+                self.imgstatus += 1
+                
+            if self.x == 0:
+                self.xdirection = True
+            if self.x == g.w - 100:
+                self.xdirection = False
+            if self.y == 0:
+                self.ydirection = True
+            if self.y == g.h - (g.h/2):
+                self.ydirection = False
             
-        if self.x == 0:
-            self.xdirection = True
-        if self.x == g.w - 100:
-            self.xdirection = False
-        if self.y == 0:
-            self.ydirection = True
-        if self.y == g.h - (g.h/2):
-            self.ydirection = False
-        
-        
-        if self.xdirection:
-            self.x += self.vx
-        else:
-            self.x -= self.vx
-        if self.ydirection:
-            self.y += self.vy
-        else:
-            self.y -= self.vy
             
-        for x in self.shots:
-            x.display()
+            if self.xdirection:
+                self.x += self.vx
+            else:
+                self.x -= self.vx
+            if self.ydirection:
+                self.y += self.vy
+            else:
+                self.y -= self.vy
+                
+            for x in self.shots:
+                x.display()
             
     def shotmaker(self):
         if (number%20) == 0:
@@ -201,7 +204,6 @@ class enemy3(Enemies):
         self.imgstatus = 0
         self.direction = 1
         self.shots = []
-        
     def distance (self,e):
         return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
  
@@ -214,42 +216,43 @@ class enemy3(Enemies):
 
     
     def display(self):
-        self.shipshots()
-        image(self.img, self.x, self.y, 100, 100, 64*self.imgstatus, 0, 64+64*self.imgstatus, 64)
-        
-        if self.imgstatus == 7:
-            self.imgstatus += -7 
-        else:
-            self.imgstatus += 1
+        if g.state=="play":
+            self.shipshots()
+            image(self.img, self.x, self.y, 100, 100, 64*self.imgstatus, 0, 64+64*self.imgstatus, 64)
             
-        if self.x == 0 or self.y == 0:
-            self.direction = 1
-        if self.x == g.w - 100:
-            self.direction = 2
-        if self.y ==  g.h - 100:
-            self.direction = 3
+            if self.imgstatus == 7:
+                self.imgstatus += -7 
+            else:
+                self.imgstatus += 1
+                
+            if self.x == 0 or self.y == 0:
+                self.direction = 1
+            if self.x == g.w - 100:
+                self.direction = 2
+            if self.y ==  g.h - 100:
+                self.direction = 3
+                
+            if self.direction == 1:
+                self.vx = 5
+                self.vy = 0
+                self.x += self.vx
+                self.y += self.vy
+            if self.direction == 2:
+                self.vx = -10
+                self.vy = 10
+                self.x += self.vx
+                self.y += self.vy
+            if self.direction == 3:
+                self.vx = -10
+                self.vy = -10
+                self.x += self.vx
+                self.y += self.vy
             
-        if self.direction == 1:
-            self.vx = 5
-            self.vy = 0
-            self.x += self.vx
-            self.y += self.vy
-        if self.direction == 2:
-            self.vx = -10
-            self.vy = 10
-            self.x += self.vx
-            self.y += self.vy
-        if self.direction == 3:
-            self.vx = -10
-            self.vy = -10
-            self.x += self.vx
-            self.y += self.vy
-        
-        
-    
             
-        for x in self.shots:
-            x.display()
+        
+                
+            for x in self.shots:
+                x.display()
             
     def shotmaker(self):
         if (number%20) == 0:
@@ -277,15 +280,15 @@ class Asteroid(Enemies):
 
                         
     def display(self):
-        self.shipshots()
-        
-        if self.y > g.h+50 :
-            g.asteroids.remove(self)
-            del self
-            return
-        
-        image(self.img, self.x, self.y, 50, 50)
-        self.y += self.vy
+        if g.state=="play":
+            self.shipshots()
+            
+            if self.y > g.h+50 :
+                g.asteroids.remove(self)
+                del self
+                return
+            image(self.img, self.x, self.y, 50, 50)
+            self.y += self.vy
             
         
 class Shotforenemy1:
@@ -297,25 +300,26 @@ class Shotforenemy1:
         self.img = loadImage(path+"/Images/"+'Shot.png')
         
     def display(self):
-        if self.y > g.w + 100:
-            for x in g.enemy1:
-                for y in x.shots:
-                    if self == y:
-                        x.shots.remove(self)
-                        del self
-                        return
-            for x in g.enemy2:
-                for y in x.shots:
-                    if self == y:
-                        x.shots.remove(self)
-                        del self
-                        return
-            for x in g.enemy3:
-                for y in x.shots:
-                    if self == y:
-                        x.shots.remove(self)
-                        del self
-                        return
+        if g.state=="play":
+            if self.y > g.w + 100:
+                for x in g.enemy1:
+                    for y in x.shots:
+                        if self == y:
+                            x.shots.remove(self)
+                            del self
+                            return
+                for x in g.enemy2:
+                    for y in x.shots:
+                        if self == y:
+                            x.shots.remove(self)
+                            del self
+                            return
+                for x in g.enemy3:
+                    for y in x.shots:
+                        if self == y:
+                            x.shots.remove(self)
+                            del self
+                            return
             
         image(self.img, self.x, self.y, 5, 20)
         self.y += self.vy
@@ -331,15 +335,16 @@ class Shot:
         self.keyHandler = {UP:False}
         
     def display(self):
-        if self.y < -50:
-            g.ship.shots.remove(self)
-            del self
-            return
-            
-        # if self.keyHandler[UP] == True:
-        image(self.img, self.x, self.y, 5, 20)
-        self.y += self.vy
-        self.x += self.vx
+        if g.state=="play":
+            if self.y < -50:
+                g.ship.shots.remove(self)
+                del self
+                return
+                
+            # if self.keyHandler[UP] == True:
+            image(self.img, self.x, self.y, 5, 20)
+            self.y += self.vy
+            self.x += self.vx
  
 class Background:
     def __init__(self,x,y,w,h):
@@ -351,8 +356,9 @@ class Background:
         self.img = loadImage(path+"/Images/"+'space.jpg')
     
     def display(self):
-        image(self.img, 0, self.y+self.vy, self.w, self.h)
-        self.vy = (self.vy+1)%g.h
+        if g.state=="play":
+            image(self.img, 0, self.y+self.vy, self.w, self.h)
+            self.vy = (self.vy+1)%g.h
 
 
 class Game:
@@ -366,6 +372,7 @@ class Game:
         self.enemy2 = []
         self.enemy3 = []
         self.startTime = 0
+        self.score=0
         #print(startTime)                                                            #line 88 to 94 adds Asteroids to the asteroids array
         
     
@@ -375,24 +382,15 @@ class Game:
         self.ship=Spaceship(self.w/2, self.h - 75)
         self.menuimg=loadImage(path+"/Images/"+'menu.jpg')
         self.logo=loadImage(path+"/Images/"+'spaceinvaders.png')
-    
-    def display(self):
-        if self.state=="menu":
-           image(self.menuimg,0,0,self.w,self.h)
-        elif self.lives==0:
-            self.state=="gameover"
-            textSize(50)
-            fill(255,255,0)
-            fill (255,0,0)
-            text("GAME OVER", g.w//3, g.h//2)
-            textSize(30)
-            fill(255)
-            text("Play again",g.w//3+370,g.h//2+250)
-            textSize(30)
-            fill(255)
-            text("Main Menu",g.w//3-250,g.h//2+250)  
+        self.instructions=loadImage(path+"/Images/"+'ins.png')
         
-        else:
+    def lifechecker(self):
+        if self.lives==0 and self.state=="play":
+            self.state="gameover"
+            self.lives=3
+    def display(self):
+        self.lifechecker()
+        if self.state=="play":
             for x in range(len(self.backimage)):
                 self.backimage[x].display()
             self.ship.display()
@@ -405,20 +403,24 @@ class Game:
             for r in self.enemy2:                                       #displays asteroids
                 r.display()
             for t in self.enemy3:                                       #displays asteroids
-                t.display()
-            
-                
-                
+                t.display()            
             textSize(20)
             fill(255)
             gametime=int(time.time()-g.startTime)
+            self.score=gametime
             text("Score: "+str(gametime), 20, 20)
             text("     Lives:" +str(self.lives), 110, 20)
-
+        elif self.state=="menu":
+           image(self.menuimg,0,0,self.w,self.h)
+        elif self.state=="instructions":
+           image(self.instructions,0,0,self.w,self.h)  
+        elif self.state=="gameover":
+           image(self.menuimg,0,0,self.w,self.h)
+        
         
       
     def makeasteroids(self):
-        if (number%20) == 0:
+        if (number%20) == 0 and self.state=="play":
             for x in range(1):
                 randomy = random.randint(-50,0) 
                 randomx = random.randint(0,self.w) 
@@ -427,16 +429,16 @@ class Game:
                 self.asteroids.append(Asteroid(randomx, randomy, 0, 10))
                 
     def makeenemy1(self):
-        if (number%150) == 0:
+        if (number%150) == 0 and self.state=="play":
             for x in range(1):                                                                                                                                        
                 self.enemy1.append(Alien(0,0,5,2))
                 
     def makeenemy2(self):
-        if (number%400) == 0:
+        if (number%400) == 0 and self.state=="play":
             for x in range(1):                                                                                                                                        
                 self.enemy2.append(creature(g.w/2-75,0,5,2))
     def makeenemy3(self):
-        if (number%700) == 0:
+        if (number%700) == 0 and self.state=="play":
             for x in range(1):                                                                                                                                        
                 self.enemy3.append(enemy3(0,0,5,5))
     
@@ -474,17 +476,27 @@ def draw():
     elif g.state == "gameover":
         g.display()
         textSize(50)
-        if g.w//3+370 < mouseX < g.w//3+400 and g.h//2+250 < mouseY < g.h//2 + 300:
-            fill(255,255,0)
+        fill (255,0,0)
+        text("GAME OVER", g.w//3, g.h//2)
+        textSize(30)
+        fill(255,0,0)
+        text("Your Score is:"+ str(g.score),g.w//3+280,g.h//2+250)
+        textSize(30)
+        if g.w//3-250 < mouseX < g.w//3-50 and g.h//2+230 < mouseY < g.h//2 + 250:
+            fill(255,0,0)
         else:
-            fill (255,0,0)
-            text("GAME OVER", g.w//3, g.h//2)
-            textSize(30)
             fill(255)
-            text("Play again",g.w//3+370,g.h//2+250)
-            textSize(30)
+        text("Main Menu",g.w//3-250,g.h//2+250)
+    elif g.state=="instructions":
+        g.display()
+        textSize(30)
+        if g.w//3-250 < mouseX < g.w//3-50 and g.h//2+230 < mouseY < g.h//2 + 250:
+            fill(255,0,0)
+        else:
             fill(255)
-            text("Main Menu",g.w//3-250,g.h//2+250)      
+        text("Main Menu",g.w//3-250,g.h//2+250)
+       
+            
     
     global number    
     number += numberchange
@@ -501,15 +513,21 @@ def draw():
     
 
 
-
 def mouseClicked():
+    if g.w//3-250 < mouseX < g.w//3-50 and g.h//2+230 < mouseY < g.h//2 + 250:
+        g.state="menu"
+        # g.lives=3
+        g.__init__(800,600) 
+    if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3+100 < mouseY < g.h//3 + 150:
+        g.state="instructions"
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
         g.state="play"  
         g.startTime = time.time()
-    if g.w//3+370 < mouseX < g.w//3+400 and g.h//2+250 < mouseY < g.h//2 + 300:
-        g.state="play"
-        g.startTime = time.time()
-    
+    # if g.state=="gameover":
+        # if g.w//3+370 < mouseX < g.w//3+600 and g.h//2+230 < mouseY < g.h//2 + 300:
+        #     g.state="play"
+        #     g.startTime = time.time()
+
 def keyPressed():
     global shotcount
     if keyCode == LEFT:
