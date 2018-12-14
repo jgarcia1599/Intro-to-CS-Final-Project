@@ -275,11 +275,6 @@ class Asteroid(Enemies):
                 del self 
                 return
 
-        # for a in g.enemy1:
-        #     for x in g.enemy1[g.enemy1.index(a)].shots:
-        #         if self.distance(x)<=50:
-        #             g.enemy1[g.enemy1.index(a)].shots.remove(x)
-        #             g.lives-=1
                         
     def display(self):
         self.shipshots()
@@ -384,6 +379,19 @@ class Game:
     def display(self):
         if self.state=="menu":
            image(self.menuimg,0,0,self.w,self.h)
+        elif self.lives==0:
+            self.state=="gameover"
+            textSize(50)
+            fill(255,255,0)
+            fill (255,0,0)
+            text("GAME OVER", g.w//3, g.h//2)
+            textSize(30)
+            fill(255)
+            text("Play again",g.w//3+370,g.h//2+250)
+            textSize(30)
+            fill(255)
+            text("Main Menu",g.w//3-250,g.h//2+250)  
+        
         else:
             for x in range(len(self.backimage)):
                 self.backimage[x].display()
@@ -406,7 +414,7 @@ class Game:
             gametime=int(time.time()-g.startTime)
             text("Score: "+str(gametime), 20, 20)
             text("     Lives:" +str(self.lives), 110, 20)
-            
+
         
       
     def makeasteroids(self):
@@ -464,10 +472,19 @@ def draw():
         g.display()
             
     elif g.state == "gameover":
-        textSize(50)
-        fill (255,0,0)
-        text("GAME OVER", g.w//2.5, g.h//3+140)
         g.display()
+        textSize(50)
+        if g.w//3+370 < mouseX < g.w//3+400 and g.h//2+250 < mouseY < g.h//2 + 300:
+            fill(255,255,0)
+        else:
+            fill (255,0,0)
+            text("GAME OVER", g.w//3, g.h//2)
+            textSize(30)
+            fill(255)
+            text("Play again",g.w//3+370,g.h//2+250)
+            textSize(30)
+            fill(255)
+            text("Main Menu",g.w//3-250,g.h//2+250)      
     
     global number    
     number += numberchange
@@ -488,6 +505,9 @@ def draw():
 def mouseClicked():
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
         g.state="play"  
+        g.startTime = time.time()
+    if g.w//3+370 < mouseX < g.w//3+400 and g.h//2+250 < mouseY < g.h//2 + 300:
+        g.state="play"
         g.startTime = time.time()
     
 def keyPressed():
