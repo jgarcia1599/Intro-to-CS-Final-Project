@@ -1,7 +1,9 @@
+add_library('minim')
 import time
 import random
 
 path = os.getcwd()
+player = Minim(this)
 
 number = 21
 numberchange = 1
@@ -16,7 +18,8 @@ class Spaceship:
         self.keyHandler={LEFT:False, RIGHT:False}
         self.img = loadImage(path+"/Images/"+'spaceship.png')
         self.shots = []
-
+        self.explosion=player.loadFile(path+"/sound/explosion.mp3")
+        self.music=player.loadFile(path+"/sound/music.mp3")
     def distance (self,e):
         return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
     
@@ -24,34 +27,41 @@ class Spaceship:
         for a in g.asteroids:
             if self.distance(a)<=50:
                 g.asteroids.remove(a)
+                self.explosion.play()
                 g.lives-=1
         for a in g.enemy1:
             if self.distance(a)<=50:
                 g.enemy1.remove(a)
                 g.lives-=1
+                self.explosion.play()
         for a in g.enemy1:
             for x in g.enemy1[g.enemy1.index(a)].shots:
                 if self.distance(x)<=50:
                     g.enemy1[g.enemy1.index(a)].shots.remove(x)
                     g.lives-=1
+                    self.explosion.play()
         for a in g.enemy2:
             if self.distance(a)<=50:
                 g.enemy2.remove(a)
                 g.lives-=1
+                self.explosion.play()
         for a in g.enemy2:
             for x in g.enemy2[g.enemy2.index(a)].shots:
                 if self.distance(x)<=50:
                     g.enemy2[g.enemy2.index(a)].shots.remove(x)
                     g.lives-=1
+                    self.explosion.play()
         for a in g.enemy3:
             if self.distance(a)<=50:
                 g.enemy3.remove(a)
                 g.lives-=1
+                self.explosion.play()
         for a in g.enemy3:
             for x in g.enemy3[g.enemy3.index(a)].shots:
                 if self.distance(x)<=5:
                     g.enemy3[g.enemy3.index(a)].shots.remove(x)
                     g.lives-=1
+                    self.explosion.play()
         
     
     def display(self):
@@ -99,6 +109,7 @@ class Alien(Enemies):
             if self.distance(x)<=30:                
                 g.enemy1.remove(self)
                 del self 
+                g.ship.explosion.play()
                 return
     
     def display(self):
@@ -156,6 +167,7 @@ class creature(Enemies):
             if self.distance(x)<=30:
                 self.rs=True
                 g.enemy2.remove(self)
+                g.ship.explosion.play()
                 del self 
                 return
     
@@ -211,6 +223,7 @@ class enemy3(Enemies):
         for x in g.ship.shots:
             if self.distance(x)<=30:
                 g.enemy3.remove(self)
+                g.ship.explosion.play()
                 del self 
                 return
 
@@ -285,6 +298,7 @@ class Asteroid(Enemies):
             
             if self.y > g.h+50 :
                 g.asteroids.remove(self)
+                g.ship.explosion.play()
                 del self
                 return
             image(self.img, self.x, self.y, 50, 50)
@@ -332,6 +346,7 @@ class Shot:
         self.vx = vx
         self.vy = vy
         self.img = loadImage(path+"/Images/"+'Shot.png')
+        self.shotmusic=player.loadFile(path+"/sound/shot.wav")
         self.keyHandler = {UP:False}
         
     def display(self):
@@ -373,8 +388,9 @@ class Game:
         self.enemy3 = []
         self.startTime = 0
         self.score=0
-        #print(startTime)                                                            #line 88 to 94 adds Asteroids to the asteroids array
-        
+        #print(startTime)
+        self.music=player.loadFile(path+"/sound/music.mp3")
+        # self.music = player.loadFile(path+"/sounds/music.mp3")
     
         self.backimage = []
         for x in range(2):
@@ -389,6 +405,7 @@ class Game:
             self.state="gameover"
             self.lives=3
     def display(self):
+        self.music
         self.lifechecker()
         if self.state=="play":
             for x in range(len(self.backimage)):
@@ -455,6 +472,7 @@ def setup():
 def draw():      
     if g.state == "menu":
         g.display()
+        g.music.play()
         textSize(34)
         image(g.logo,0,0,g.w,g.h//3)
         
@@ -472,9 +490,11 @@ def draw():
     elif g.state == "play":
         background(0)
         g.display()
+        g.music.play()
             
     elif g.state == "gameover":
         g.display()
+        g.music.play()
         textSize(50)
         fill (255,0,0)
         text("GAME OVER", g.w//3, g.h//2)
@@ -516,12 +536,15 @@ def draw():
 def mouseClicked():
     if g.w//3-250 < mouseX < g.w//3-50 and g.h//2+230 < mouseY < g.h//2 + 250:
         g.state="menu"
+        g.music.play()
         # g.lives=3
         g.__init__(800,600) 
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3+100 < mouseY < g.h//3 + 150:
         g.state="instructions"
+        g.music.play()
     if g.w//2.5 < mouseX < g.w//2.5 + 200 and g.h//3 < mouseY < g.h//3 + 50:
-        g.state="play"  
+        g.state="play"
+        g.music.play()  
         g.startTime = time.time()
     # if g.state=="gameover":
         # if g.w//3+370 < mouseX < g.w//3+600 and g.h//2+230 < mouseY < g.h//2 + 300:
@@ -534,9 +557,8 @@ def keyPressed():
         g.ship.keyHandler[LEFT] = True
     elif keyCode == RIGHT:
         g.ship.keyHandler[RIGHT] = True
-    #elif keyCode == UP:
-        #g.ship.shots.append(Shot(g.ship.x +23,g.ship.y, 0, -15))
-    
+    elif keyCode == UP:
+        return
         
 def keyReleased():
     if keyCode == LEFT:
@@ -545,6 +567,8 @@ def keyReleased():
         g.ship.keyHandler[RIGHT] = False
     elif keyCode == UP:
         g.ship.shots.append(Shot(g.ship.x +23,g.ship.y, 0, -15))
+        g.ship.shots[0].shotmusic.play()
+        
 
 
     
