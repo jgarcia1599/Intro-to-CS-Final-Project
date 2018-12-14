@@ -6,7 +6,12 @@ path = os.getcwd()
 player = Minim(this)
 
 number = 21
-numberchange = 1
+numberchange = 1                                   #number is increased by number change in the draw function, which is continuesly ran
+
+if number > 2000:
+    numberchange = 5                              # this block increases difficulty as the game runs
+elif number > 1200:
+    numberchange = 2
 
 
 class Spaceship:
@@ -25,7 +30,7 @@ class Spaceship:
     def distanceshots (self,e):
         return (((self.x+25)-(e.x+2.5))**2+((self.y+25)-(e.y+10))**2)**0.5
     def distanceenemy1 (self,e):
-        return (((self.x+25)-(e.x+50))**2+((self.y+25)-(e.y+50))**2)**0.5
+        return (((self.x+25)-(e.x+50))**2+((self.y+25)-(e.y+50))**2)**0.5               #lines 28 to 96 are for collisions
     def distanceenemy2 (self,e):
         return (((self.x+25)-(e.x+37.5))**2+((self.y+25)-(e.y+60))**2)**0.5 
     def distanceenemy3 (self,e):
@@ -105,7 +110,7 @@ class Alien(Enemies):
         Enemies.__init__(self,x,y,vx,vy)
         self.img = loadImage(path+"/Images/"+'Enemy1.png') 
         self.imgstatus = 1
-        self.xdirection = True
+        self.xdirection = True                                     #first enemy class
         self.ydirection = True
         self.shots = []
     def distance (self,e):
@@ -163,7 +168,7 @@ class creature(Enemies):
         Enemies.__init__(self,x,y,vx,vy)
         self.img = loadImage(path+"/Images/"+'Enemy2.png') 
         self.imgstatus = 1
-        self.xdirection = True
+        self.xdirection = True                                   #second enemy class
         self.ydirection = True
         self.shots = []
     def distance (self,e):
@@ -222,7 +227,7 @@ class enemy3(Enemies):
         self.img = loadImage(path+"/Images/"+'Enemy3.png') 
         self.imgstatus = 0
         self.direction = 1
-        self.shots = []
+        self.shots = []                                                 #enemy 3 class
     def distance (self,e):
         return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
  
@@ -313,7 +318,7 @@ class Asteroid(Enemies):
             
         
 class Shotforenemy1:
-    def __init__(self, x, y,vx, vy):
+    def __init__(self, x, y,vx, vy):                          #shots for the enemies
         self.x = x
         self.y = y
         self.vx = vx
@@ -350,7 +355,7 @@ class Shot:
     def __init__(self, x, y,vx, vy):
         self.x = x
         self.y = y
-        self.vx = vx
+        self.vx = vx                                             #shots for ship
         self.vy = vy
         self.img = loadImage(path+"/Images/"+'Shot.png')
         self.shotmusic=player.loadFile(path+"/sound/shot.wav")
@@ -372,7 +377,7 @@ class Background:
     def __init__(self,x,y,w,h):
         self.x = x
         self.y = y
-        self.w = w
+        self.w = w                                            #background class
         self.h = h
         self.vy = +1
         self.img = loadImage(path+"/Images/"+'space.jpg')
@@ -436,6 +441,8 @@ class Game:
             text("     Lives:" +str(self.lives), 110, 20)
         elif self.state=="menu":
            image(self.menuimg,0,0,self.w,self.h)
+           global number
+           number = 21
         elif self.state=="instructions":
            image(self.instructions,0,0,self.w,self.h)  
         elif self.state=="gameover":
@@ -526,7 +533,7 @@ def draw():
             
     
     global number    
-    number += numberchange
+    number += numberchange                                 #lines 537 to 546 checks to create enemies and asteroids and shots
     g.makeasteroids()
     g.makeenemy1()
     g.makeenemy2()
@@ -538,7 +545,7 @@ def draw():
     for x in g.enemy3:
         x.shotmaker()
     
-
+    print(number)
 
 def mouseClicked():
     if g.w//3-250 < mouseX < g.w//3-50 and g.h//2+230 < mouseY < g.h//2 + 250:
@@ -562,7 +569,7 @@ def keyPressed():
     global shotcount
     if keyCode == LEFT:
         g.ship.keyHandler[LEFT] = True
-    elif keyCode == RIGHT:
+    elif keyCode == RIGHT:                          #for movement of ship
         g.ship.keyHandler[RIGHT] = True
     elif keyCode == UP:
         return
@@ -572,7 +579,7 @@ def keyReleased():
         g.ship.keyHandler[LEFT] = False
     elif keyCode == RIGHT:
         g.ship.keyHandler[RIGHT] = False
-    elif keyCode == UP:
+    elif keyCode == UP:                                                #for movement of ship and creates shots in class
         g.ship.shots.append(Shot(g.ship.x +23,g.ship.y, 0, -15))
         g.ship.shots[0].shotmusic.play()
         
