@@ -21,8 +21,15 @@ class Spaceship:
         self.explosion=player.loadFile(path+"/sound/explosion.mp3")
         self.music=player.loadFile(path+"/sound/music.mp3")
     def distance (self,e):
-        return ((self.x-e.x)**2+(self.y-e.y)**2)**0.5
-    
+        return (((self.x+25)-e.x)**2+((self.y+25)-e.y)**2)**0.5
+    def distanceshots (self,e):
+        return (((self.x+25)-(e.x+2.5))**2+((self.y+25)-(e.y+10))**2)**0.5
+    def distanceenemy1 (self,e):
+        return (((self.x+25)-(e.x+50))**2+((self.y+25)-(e.y+50))**2)**0.5
+    def distanceenemy2 (self,e):
+        return (((self.x+25)-(e.x+37.5))**2+((self.y+25)-(e.y+60))**2)**0.5 
+    def distanceenemy3 (self,e):
+        return (((self.x+25)-(e.x+50))**2+((self.y+25)-(e.y+50))**2)**0.5      
     def spaceshiplives(self):
         for a in g.asteroids:
             if self.distance(a)<=50:
@@ -30,35 +37,35 @@ class Spaceship:
                 self.explosion.play()
                 g.lives-=1
         for a in g.enemy1:
-            if self.distance(a)<=50:
+            if self.distanceenemy1(a)<=40:
                 g.enemy1.remove(a)
                 g.lives-=1
                 self.explosion.play()
         for a in g.enemy1:
             for x in g.enemy1[g.enemy1.index(a)].shots:
-                if self.distance(x)<=50:
+                if self.distanceshots(x)<=40:
                     g.enemy1[g.enemy1.index(a)].shots.remove(x)
                     g.lives-=1
                     self.explosion.play()
         for a in g.enemy2:
-            if self.distance(a)<=50:
+            if self.distanceenemy2(a)<=50:
                 g.enemy2.remove(a)
                 g.lives-=1
                 self.explosion.play()
         for a in g.enemy2:
             for x in g.enemy2[g.enemy2.index(a)].shots:
-                if self.distance(x)<=50:
+                if self.distanceshots(x)<=50:
                     g.enemy2[g.enemy2.index(a)].shots.remove(x)
                     g.lives-=1
                     self.explosion.play()
         for a in g.enemy3:
-            if self.distance(a)<=50:
+            if self.distanceenemy3(a)<=50:
                 g.enemy3.remove(a)
                 g.lives-=1
                 self.explosion.play()
         for a in g.enemy3:
             for x in g.enemy3[g.enemy3.index(a)].shots:
-                if self.distance(x)<=5:
+                if self.distanceshots(x)<=5:
                     g.enemy3[g.enemy3.index(a)].shots.remove(x)
                     g.lives-=1
                     self.explosion.play()
